@@ -42,7 +42,7 @@ def sum_mp3_durations(directory):
     # calculate the execution duration
     end = time.monotonic()
     exec_dur = timedelta(seconds=end-start)
-    color: str = f"{fore('chartreuse_1')}{back('black')}"
+    color: str = f"{fore('light_cyan')}{back('black')}"
     print('\n')
     print(f"{color}execution duration: {exec_dur}")
 
@@ -56,12 +56,15 @@ hours, m = divmod(minutes, 60)
 days, h = divmod(hours, 24)
 
 if len(problem_files):
-    color: str = f"{fore('red_1')}{back('black')}"
+    style('blink')
+    color: str = f"{style('underline')}{fore('red_1')}{back('black')}"
     print('\n')
     print(f'{color}The following mp3 files had a problem and did not get included:')
     for prob in problem_files:
-        print(prob)
+        color: str = f"{style('reset')}{fore('light_red')}{back('black')}"
+        print(f"{color}{prob}")
 print('\n')
-color: str = f"{fore('chartreuse_1')}{back('black')}"
+color: str = f"{style('reset')}{fore('chartreuse_3a')}{back('black')}"
 print(f"{color}The total duration of the mp3s in the scanned folder:")
+color: str = f"{fore('chartreuse_1')}{back('black')}"
 print(f"{color}{days} days, {h} hours, {m} minutes, {s} seconds")
