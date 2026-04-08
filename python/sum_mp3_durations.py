@@ -4,9 +4,11 @@ import time
 from datetime import timedelta
 from pathlib import Path
 import librosa
+from colored import fore, back, style
 
 # the folder to scan is passed in as an argument
 folder = Path(sys.argv[1])
+problem_files = []
 
 
 def sum_mp3_durations(directory):
@@ -16,6 +18,8 @@ def sum_mp3_durations(directory):
     if not directory.is_dir():
         print(f"Error: {directory} is not a valid directory")
         sys.exit(1)
+    files_included = 0
+    color: str = f"{fore('purple_1a')}{back('black')}"
     # used to calculate the execution time of the function
     start = time.monotonic()
     # the sum of the mp3 durations
@@ -24,14 +28,23 @@ def sum_mp3_durations(directory):
     for root, dirs, files in os.walk(directory):
         # loop through all the files
         for name in files:
+
             # if the file is an mp3 add the duration to the total
-            if name.endswith('.mp3'):
-                file_path = Path(root, name)
-                total_duration += librosa.get_duration(path=str(file_path))
+            try:
+                if name.endswith('.mp3'):
+                    file_path = Path(root, name)
+                    total_duration += librosa.get_duration(path=str(file_path))
+                    files_included += 1
+                    print(f"{color}{files_included} files counted")
+            except:
+                problem_files.append(name)
+                continue
     # calculate the execution duration
     end = time.monotonic()
     exec_dur = timedelta(seconds=end-start)
-    print(f"execution duration: {exec_dur}")
+    color: str = f"{fore('chartreuse_1')}{back('black')}"
+    print('\n')
+    print(f"{color}execution duration: {exec_dur}")
 
     return round(total_duration)
 
@@ -42,5 +55,13 @@ minutes, s = divmod(sum_seconds, 60)
 hours, m = divmod(minutes, 60)
 days, h = divmod(hours, 24)
 
-print("The total duration of the mp3s in the scanned folder:")
-print(f"{days} days, {h} hours, {m} minutes, {s} seconds")
+if len(problem_files):
+    color: str = f"{fore('red_1')}{back('black')}"
+    print('\n')
+    print(f'{color}The following mp3 files had a problem and did not get included:')
+    for prob in problem_files:
+        print(prob)
+print('\n')
+color: str = f"{fore('chartreuse_1')}{back('black')}"
+print(f"{color}The total duration of the mp3s in the scanned folder:")
+print(f"{color}{days} days, {h} hours, {m} minutes, {s} seconds")
