@@ -37,7 +37,7 @@ def sum_mp3_durations(directory):
                     files_included += 1
                     print(f"{color}{files_included} files counted")
             except:
-                problem_files.append(name)
+                problem_files.append((root, name))
                 continue
     # calculate the execution duration
     end = time.monotonic()
